@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    runs-on: threadripper
+    runs-on: self-hosted
     steps:
       - name: Create workspace
         id: step1

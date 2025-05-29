@@ -64,8 +64,8 @@ The yaml file also contains different robot_types, to indicate differences betwe
     robot_types:
         cf21:
             motion_capture:
-                tracking: "librigidbodytracker"
-                # the following settings are only relevant if "librigidbodytracker" is used; see motion_capture.yaml
+                enabled: true
+                # only if enabled; see motion_capture.yaml
                 marker: default_single_marker
                 dynamics: default
             big_quad: false
@@ -75,8 +75,8 @@ The yaml file also contains different robot_types, to indicate differences betwe
 
         cf21_mocap_deck:
             motion_capture:
-                tracking: "librigidbodytracker"
-                # the following settings are only relevant if "librigidbodytracker" is used; see motion_capture.yaml
+                enabled: true
+                # only if enabled; see motion_capture.yaml
                 marker: mocap_deck
                 dynamics: default
             big_quad: false
@@ -135,34 +135,19 @@ If you have a motion capture system, you can input the specifics in the motion_c
             type: "optitrack"
             hostname: "optitrackPC"
 
-`type` can be replaced by "optitrack", "vicon", "qualisys" or any of the other supported motion capture systems of the `motion capture tracking package <https://github.com/IMRCLab/motion_capture_tracking/tree/ros2/>`_.
+'Type' can replaced by "optitrack", "vicon", "qualisys" or any of the other supported motion capture systems of the `motion capture tracking package <https://github.com/IMRCLab/motion_capture_tracking/tree/ros2/>`_.
 'hostname' is the hostname of the computer running the motion capture software which can either be the PC name or the IP.
-Please check the documentation of the `motion capture tracking package <https://github.com/IMRCLab/motion_capture_tracking/tree/ros2/>`_ for any additional configuration that might be needed on the vendor software side.
 
-There are two different modes for tracking rigid bodies:
-
-1. Using the vendor-specific software (e.g., VICON Tracker or OptiTrack Motive), or
-2. Using `librigidbodytracker`, which is a package built into the `motion capture tracking package <https://github.com/IMRCLab/motion_capture_tracking/tree/ros2/>`_ and allows to use identical marker configurations or a single marker per rigid body as long as the initial pose is known a-priori.
-
-You can enable either mode in `crazyflies.yaml`:
+Also make sure that in crazyflies.yaml, the motion_capture field is enabled for the specific robot type, or that the crazyflie is of a type that supports motion capture.
 
 .. code-block:: yaml
 
     robot_types:
-    cf21:
-        motion_capture:
-            tracking: "librigidbodytracker" # use "vendor" for vendor-specific software or "librigidbodytracker" for custom frame-by-frame tracking using motion capture point clouds
-            marker: default_single_marker
-            dynamics: default
-.. note::
+        cf21:
+            motion_capture:
+            enabled: true
 
-    For most experiments, we recommend putting a single marker on top of the robots and use the "librigidbodytracker" with the "default_single_marker" configuration.
-    In this mode, we use optimal task assignment at every frame, which makes this mode more robust to motion capture outliers compared to the duplicate marker arrangements.
-    The main disadvantage is that the yaw angle cannot be observed without moving in the xy-plane.
-    Nevertheless, it is possible to hover for 30 seconds in place for a Crazyflie 2.1, without causing flight instabilities.
-
-
-For more in-depth information about the motion capture tracking package, see the `documentation <https://github.com/IMRCLab/motion_capture_tracking/tree/ros2/>`_.
+For more indepth information about the motion capture tracking package, see the `documentation <https://github.com/IMRCLab/motion_capture_tracking/tree/ros2/>`_.
 
 Onboard positioning
 ~~~~~~~~~~~~~~~~~~~
@@ -183,7 +168,7 @@ Also in this case, make sure that motion_capture is disabled in the crazyflies.y
     robot_types:
         cf21:
             motion_capture:
-                tracking: "vendor"
+            enabled: false
 
 Also it is a good idea to turn on pose estimation logging such that you are able to see the poses and transforms of the Crazyflie updated in real life in rviz or the Swarm management gui.
 
